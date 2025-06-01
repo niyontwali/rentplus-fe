@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import RentPlusLogo from '@/assets/images/logo.png';
+import RentPlusLogoLight from '@/assets/images/logo.svg';
+import RentPlusLogoDark from '@/assets/images/logo.png';
 
 interface NavbarProps {
   className?: string;
@@ -50,11 +52,17 @@ const navItems = [
 ];
 
 const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Handle scroll to change navbar text color
+  // Check if we're on the home page
+  const isHomePage = pathname === '/';
+
+  // Handle scroll to change navbar text color (only for home page)
   useEffect(() => {
+    if (!isHomePage) return; // Skip scroll listener on non-home pages
+
     const handleScroll = () => {
       // Assuming hero section is roughly 100vh, adjust this value as needed
       const heroHeight = window.innerHeight;
@@ -63,26 +71,43 @@ const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Dynamic text color classes
-  const textColorClass = isScrolled ? 'text-primary' : 'text-white';
-  const hoverTextColorClass = isScrolled ? 'hover:text-primary/80' : 'hover:text-secondary';
+  // Dynamic styling based on page and scroll state
+  const getNavbarStyles = () => {
+    if (!isHomePage) {
+      // Non-home pages: always have bg-accent/90 and text-primary
+      return {
+        background: 'bg-accent/90',
+        textColor: 'text-primary',
+        logo: RentPlusLogoLight,
+      };
+    } else {
+      // Home page: transparent background, color changes on scroll
+      return {
+        background: 'bg-transparent',
+        textColor: isScrolled ? 'text-primary' : 'text-white',
+        logo: isScrolled ? RentPlusLogoLight : RentPlusLogoDark,
+      };
+    }
+  };
+
+  const navStyles = getNavbarStyles();
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 bg-transparent backdrop-blur-md z-50 transition-colors duration-300 ${className}`}
+      className={`fixed top-0 left-0 right-0 ${navStyles.background} backdrop-blur-md z-50 transition-colors duration-300 ${className}`}
     >
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex items-center justify-between h-16 lg:h-20'>
           {/* Logo */}
           <div className='flex-shrink-0'>
             <Link href='/' className='flex items-center'>
-              <Image src={RentPlusLogo} alt='Rent Plus' className='w-[100px] h-auto' />
+              <Image src={navStyles.logo} alt='Rent Plus' className='w-[100px] h-auto' />
             </Link>
           </div>
 
@@ -90,11 +115,14 @@ const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
           <div className='hidden lg:block'>
             <div className='ml-10 flex items-baseline '>
               {navItems.map(item => {
+                const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.name}
                     href={item.href!}
-                    className={`${textColorClass} ${hoverTextColorClass} px-3 py-2 text-sm font-semibold transition-colors duration-200`}
+                    className={`${
+                      isActive ? 'text-secondary' : navStyles.textColor
+                    } hover:text-secondary px-3 py-2 text-sm font-semibold transition-colors duration-200`}
                   >
                     {item.name}
                   </Link>
@@ -117,7 +145,7 @@ const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
           <div className='lg:hidden'>
             <button
               onClick={toggleMobileMenu}
-              className={`${textColorClass} ${hoverTextColorClass} p-2 transition-colors duration-200 relative z-50`}
+              className={`${navStyles.textColor} hover:text-secondary p-2 transition-colors duration-200 relative z-50`}
               aria-label='Toggle mobile menu'
             >
               {isMobileMenuOpen ? <X className='h-6 w-6' /> : <Menu className='h-6 w-6' />}
@@ -135,11 +163,14 @@ const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
         >
           <div className='mx-4 px-6 pt-6 pb-8 space-y-1 bg-accent rounded-xl mt-2 shadow-2xl border border-gray-200/20 transform transition-all duration-300 ease-in-out'>
             {navItems.map((item, index) => {
+              const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.name}
                   href={item.href!}
-                  className={`text-gray-800 hover:text-secondary hover:bg-gray-50 block px-4 py-3 text-base font-medium transition-all duration-200 rounded-lg transform ${
+                  className={`${
+                    isActive ? 'text-secondary bg-gray-50' : 'text-gray-800'
+                  } hover:text-secondary hover:bg-gray-50 block px-4 py-3 text-base font-medium transition-all duration-200 rounded-lg transform ${
                     isMobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
                   }`}
                   style={{
