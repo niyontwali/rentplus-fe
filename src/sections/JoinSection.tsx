@@ -42,13 +42,13 @@ const JoinSection = () => {
 
         {/* Email Form */}
         <div className='max-w-lg mx-auto'>
-          <form className='flex  py-3 px-4 rounded-full border border-primary text-muted bg-accent'>
+          <form className='flex  py-2 px-4 rounded-full border border-primary text-muted bg-accent'>
             <input
               type='text'
               value={email}
               required
               onChange={e => setEmail(e.target.value)}
-              placeholder='Enter your Phone No. e.g 0786266073'
+              placeholder='Enter your Phone No.'
               className='w-full outline-none border-none px-2 placeholder-muted'
             />
             <Button type='submit' size='sm' onClick={handleSubmit}>

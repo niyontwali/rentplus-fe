@@ -418,7 +418,7 @@ const ListingSection: React.FC = () => {
             </div>
             <input
               type='text'
-              placeholder='Search properties by location e.g Kigali...'
+              placeholder='Search by location e.g Kigali...'
               value={searchTerm}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
               className='w-full pl-11 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-secondary focus:border-transparent text-sm transition-all duration-200'
