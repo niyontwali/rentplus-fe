@@ -52,8 +52,8 @@ const MobileHeroSection: React.FC = () => {
               </div>
               <input
                 type='text'
-                placeholder='Browse Properties'
-                className='w-full pl-12 pr-16 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-secondary focus:border-transparent transition-all duration-200'
+                placeholder='Search Properties by Location'
+                className='w-full pl-6 pr-16 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-secondary focus:border-transparent transition-all duration-200'
               />
               <div className='absolute inset-y-0 right-0 pr-2 flex items-center'>
                 <button className='bg-secondary hover:bg-secondary/90 text-white p-2.5 rounded-full transition-all duration-300'>
@@ -150,8 +150,8 @@ const TabletHeroSection: React.FC = () => {
               </div>
               <input
                 type='text'
-                placeholder='Browse Properties'
-                className='w-full pl-12 pr-16 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-secondary focus:border-transparent transition-all duration-200'
+                placeholder='Search Properties by Location'
+                className='w-full pl-6 pr-16 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-secondary focus:border-transparent transition-all duration-200'
               />
               <div className='absolute inset-y-0 right-0 pr-2 flex items-center'>
                 <button className='bg-secondary hover:bg-secondary/90 text-white p-2.5 rounded-full transition-all duration-300'>
@@ -258,8 +258,8 @@ const DesktopHeroSection: React.FC = () => {
                 </div>
                 <input
                   type='text'
-                  placeholder='Browse Properties'
-                  className='w-full pl-12 pr-16 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-secondary focus:border-transparent transition-all duration-200'
+                  placeholder='Search Properties by Location'
+                  className='w-full pl-6 pr-16 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-secondary focus:border-transparent transition-all duration-200'
                 />
                 <div className='absolute inset-y-0 right-0 pr-2 flex items-center'>
                   <button className='bg-secondary hover:bg-secondary/90 text-white p-2.5 rounded-full transition-all duration-300'>

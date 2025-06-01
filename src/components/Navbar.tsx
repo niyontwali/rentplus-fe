@@ -126,41 +126,60 @@ const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
         </div>
 
         {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className='lg:hidden absolute top-full left-0 right-0 z-40'>
-            <div className='mx-4 px-4 pt-4 pb-6 space-y-2 bg-white/20 backdrop-blur-md rounded-lg mt-2 border border-white/10 shadow-xl'>
-              {navItems.map(item => {
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href!}
-                    className='text-white hover:text-secondary hover:bg-white/10 block px-4 py-3 text-base font-semibold transition-all duration-200 rounded-lg'
-                    onClick={toggleMobileMenu}
-                  >
-                    {item.name}
-                  </Link>
-                );
-              })}
-
-              {/* Mobile Get Started Button */}
-              <div className='pt-2'>
+        <div
+          className={`lg:hidden absolute top-full left-0 right-0 z-40 transition-all duration-300 ease-in-out ${
+            isMobileMenuOpen
+              ? 'opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 -translate-y-4 pointer-events-none'
+          }`}
+        >
+          <div className='mx-4 px-6 pt-6 pb-8 space-y-1 bg-accent rounded-xl mt-2 shadow-2xl border border-gray-200/20 transform transition-all duration-300 ease-in-out'>
+            {navItems.map((item, index) => {
+              return (
                 <Link
-                  href='/get-started'
-                  className='bg-secondary hover:bg-secondary/90 text-white block px-6 py-3 rounded-full text-center text-base font-semibold transition-colors duration-200'
+                  key={item.name}
+                  href={item.href!}
+                  className={`text-gray-800 hover:text-secondary hover:bg-gray-50 block px-4 py-3 text-base font-medium transition-all duration-200 rounded-lg transform ${
+                    isMobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+                  }`}
+                  style={{
+                    transitionDelay: isMobileMenuOpen ? `${index * 50}ms` : '0ms',
+                  }}
                   onClick={toggleMobileMenu}
                 >
-                  Get Started
+                  {item.name}
                 </Link>
-              </div>
+              );
+            })}
+
+            {/* Mobile Get Started Button */}
+            <div
+              className={`pt-4 transform transition-all duration-300 ease-in-out ${
+                isMobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-4 opacity-0'
+              }`}
+              style={{
+                transitionDelay: isMobileMenuOpen ? `${navItems.length * 50}ms` : '0ms',
+              }}
+            >
+              <Link
+                href='/get-started'
+                className='bg-secondary hover:bg-secondary/90 text-white block px-6 py-3 rounded-full text-center text-base font-semibold transition-colors duration-200 shadow-lg'
+                onClick={toggleMobileMenu}
+              >
+                Get Started
+              </Link>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Backdrop for mobile menu */}
-      {isMobileMenuOpen && (
-        <div className='fixed inset-0 bg-black/30 backdrop-blur-md lg:hidden z-30' onClick={toggleMobileMenu} />
-      )}
+      <div
+        className={`fixed inset-0 bg-black/50 backdrop-blur-md lg:hidden z-30 transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={toggleMobileMenu}
+      />
     </nav>
   );
 };

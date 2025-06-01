@@ -349,18 +349,18 @@ const ListingSection: React.FC = () => {
     []
   );
 
-  // Calculate items per slide based on screen size
-  const getItemsPerSlide = useCallback(() => {
-    if (typeof window === 'undefined') return 8; // Default for SSR
-    if (window.innerWidth >= 1024) return 8; // lg: 4 columns x 2 rows = 8 items
-    if (window.innerWidth >= 768) return 6; // md: 3 columns x 2 rows = 6 items
-    return 4; // mobile: 2 columns x 2 rows = 4 items
+  // Fixed items per slide to avoid hydration issues
+  const itemsPerSlide = useMemo(() => {
+    // Always return 8 for desktop, 6 for tablet during SSR and client
+    return 8; // Will be used for lg screens (4x2 grid)
   }, []);
 
-  const [itemsPerSlide] = useState(getItemsPerSlide);
+  const itemsPerSlideTablet = useMemo(() => {
+    return 6; // Will be used for md screens (3x2 grid)
+  }, []);
 
-  // Group properties into slides
-  const slides = useMemo(() => {
+  // Group properties into slides for desktop (only for tablet and desktop)
+  const slidesDesktop = useMemo(() => {
     const slideArray = [];
     for (let i = 0; i < properties.length; i += itemsPerSlide) {
       slideArray.push(properties.slice(i, i + itemsPerSlide));
@@ -368,7 +368,16 @@ const ListingSection: React.FC = () => {
     return slideArray;
   }, [properties, itemsPerSlide]);
 
-  const totalSlides = slides.length;
+  // Group properties into slides for tablet
+  const slidesTablet = useMemo(() => {
+    const slideArray = [];
+    for (let i = 0; i < properties.length; i += itemsPerSlideTablet) {
+      slideArray.push(properties.slice(i, i + itemsPerSlideTablet));
+    }
+    return slideArray;
+  }, [properties, itemsPerSlideTablet]);
+
+  const totalSlidesDesktop = slidesDesktop.length;
 
   // Stable toggle function
   const toggleFavorite = useCallback((e: React.MouseEvent, propertyId: number): void => {
@@ -386,18 +395,18 @@ const ListingSection: React.FC = () => {
     });
   }, []);
 
-  // Navigation functions
+  // Navigation functions for desktop
   const goToSlide = useCallback((slideIndex: number) => {
     setCurrentSlide(slideIndex);
   }, []);
 
   const goToPrevSlide = useCallback(() => {
-    setCurrentSlide(prev => (prev === 0 ? totalSlides - 1 : prev - 1));
-  }, [totalSlides]);
+    setCurrentSlide(prev => (prev === 0 ? totalSlidesDesktop - 1 : prev - 1));
+  }, [totalSlidesDesktop]);
 
   const goToNextSlide = useCallback(() => {
-    setCurrentSlide(prev => (prev === totalSlides - 1 ? 0 : prev + 1));
-  }, [totalSlides]);
+    setCurrentSlide(prev => (prev === totalSlidesDesktop - 1 ? 0 : prev + 1));
+  }, [totalSlidesDesktop]);
 
   return (
     <section className='py-12 md:py-20 bg-accent'>
@@ -429,34 +438,76 @@ const ListingSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Properties Slider */}
-        <div className='relative overflow-hidden mb-10'>
-          <div
-            className='flex transition-transform duration-500 ease-in-out'
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            {slides.map((slide, slideIndex) => (
-              <div key={slideIndex} className='w-full flex-shrink-0'>
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6'>
-                  {slide.map((property: Property) => (
-                    <PropertyCard
-                      key={property.id}
-                      property={property}
-                      isFavorite={favorites.has(property.id)}
-                      onToggleFavorite={toggleFavorite}
-                    />
-                  ))}
-                </div>
-              </div>
+        {/* Mobile View - Single Column with 8 Properties */}
+        <div className='md:hidden mb-10'>
+          <div className='grid grid-cols-1 gap-4'>
+            {properties.slice(0, 8).map((property: Property) => (
+              <PropertyCard
+                key={property.id}
+                property={property}
+                isFavorite={favorites.has(property.id)}
+                onToggleFavorite={toggleFavorite}
+              />
             ))}
+          </div>
+        </div>
+
+        {/* Desktop/Tablet View - Properties Slider */}
+        <div className='hidden md:block mb-10'>
+          <div className='relative overflow-hidden'>
+            {/* Desktop View */}
+            <div className='hidden lg:block'>
+              <div
+                className='flex transition-transform duration-500 ease-in-out'
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {slidesDesktop.map((slide, slideIndex) => (
+                  <div key={slideIndex} className='w-full flex-shrink-0'>
+                    <div className='grid grid-cols-4 gap-6'>
+                      {slide.map((property: Property) => (
+                        <PropertyCard
+                          key={property.id}
+                          property={property}
+                          isFavorite={favorites.has(property.id)}
+                          onToggleFavorite={toggleFavorite}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Tablet View */}
+            <div className='block lg:hidden'>
+              <div
+                className='flex transition-transform duration-500 ease-in-out'
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {slidesTablet.map((slide, slideIndex) => (
+                  <div key={slideIndex} className='w-full flex-shrink-0'>
+                    <div className='grid grid-cols-3 gap-4'>
+                      {slide.map((property: Property) => (
+                        <PropertyCard
+                          key={property.id}
+                          property={property}
+                          isFavorite={favorites.has(property.id)}
+                          onToggleFavorite={toggleFavorite}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Navigation and Browse More */}
         <div className='flex flex-col sm:flex-row items-center justify-between gap-6'>
-          {/* Pagination Dots */}
-          <div className='flex items-center space-x-2'>
-            {slides.map((_, index) => (
+          {/* Pagination Dots - Only show on tablet/desktop */}
+          <div className='hidden md:flex items-center space-x-2'>
+            {slidesDesktop.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
@@ -468,8 +519,8 @@ const ListingSection: React.FC = () => {
             ))}
           </div>
 
-          {/* Navigation Arrows */}
-          <div className='flex items-center space-x-2'>
+          {/* Navigation Arrows - Only show on tablet/desktop */}
+          <div className='hidden md:flex items-center space-x-2'>
             <button
               type='button'
               onClick={goToPrevSlide}
