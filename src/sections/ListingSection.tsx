@@ -126,7 +126,7 @@ const PropertyCard = React.memo<PropertyCardProps>(
 
         {/* Popular Badge */}
         {property.isPopular && (
-          <div className='absolute top-[200px] md:top-[215px] left-0 -translate-y-5 -translate-x-2 z-50'>
+          <div className='absolute top-[200px] md:top-[215px] left-0 -translate-y-5 -translate-x-2 z-40'>
             <Image src={PopularBadge} alt='Popular Badge' className='h-8 w-auto' />
           </div>
         )}

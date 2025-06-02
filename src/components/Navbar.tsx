@@ -25,9 +25,9 @@ const navItems = [
     href: '/homeowners',
   },
   {
-    name: 'Residents',
+    name: 'Tenants',
     type: 'link',
-    href: '/residents',
+    href: '/tenants',
   },
   {
     name: 'Find Homes',

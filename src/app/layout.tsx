@@ -49,7 +49,7 @@ export default function RootLayout({
         <meta name='theme-color' content='#3C1E12' />
       </head>
       <body
-        className={`${montserrat.variable} ${inter.variable} font-montserrat antialiased text-primary overflow-x-hidden`}
+        className={`${montserrat.variable} ${inter.variable} font-montserrat antialiased text-primary overflow-x-hidden leading-relaxed`}
       >
         <div className='min-h-screen flex flex-col relative'>
           <Navbar />
